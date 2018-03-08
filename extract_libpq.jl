@@ -104,7 +104,7 @@ function extract_tar(filepath::String, dir::String)
 
     run(pipeline(`tar -C $dir -xf $filepath`, stdout=DevNull))
 end
-extract_zip(filepath::String, dir::String) = run(pipeline(`unzip -d $dir $filepath`, stdout=DevNull))
+extract_zip(filepath::String, dir::String) = run(pipeline(`unzip -u -d $dir $filepath`, stdout=DevNull))
 
 function find_prefixdir(dir::String, prefixdir::String)
     mapreduce(vcat, LIBS) do libname
