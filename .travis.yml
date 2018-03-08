@@ -1,0 +1,24 @@
+language: julia
+julia:
+- 0.6
+notifications:
+  email: false
+cache:
+  directories:
+    - $TRAVIS_BUILD_DIR/downloads
+before_script:
+- julia -e 'Pkg.add("Glob"); Pkg.add("SHA")'
+- julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryProvider.jl")'
+- julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryBuilder.jl"); Pkg.build()'
+script:
+- julia extract_libpq.jl
+deploy:
+  provider: releases
+  api_key:
+    secure: XqYptfhGBSZp9jgfXUqulZc2tknrziwzFMbwsVtU0Xm7dQFI2qmLL5FBRFE4dYYushfq0X+Qqn/Ep+jy1D0v1BFUcVkR9KxLqkDep01HExgXQ7165oTBwqb6flcZu8T+wjTke/+EqV/uL0FR0cmMtpP01YQbl/mE8HeDx9uEcXbtt1GY3JokkMT3llLMbu+xNraaR2ZAno9Gtfa1gDBBhjBZ2I+vC/LGwtXVucop5QPnTyp8uYqjsOATZ4l7hakwbMzmCWQ5kON9nubLMMHGrgiDWk4UFaK87lsocEGrnOYZsdcK21n35rZT9TcgDqKyDXS/Zdxuu6ZRRN33JVM7yApgoljl1OHG1knL2Z26zvYoGHcQAR0Z+r2GjEu0OtlPaQJ4El/kgbxM7Ayuq3KPG689KKEynYaBlOIzNtwtgMhX08HG8eLke83zs5Dj1OAp04j3EnIG8Z/ZeEFunUdtANYrK3WIqv6MiiCiR0lFV40ohhfgkFdj/xLc52Sbe4aEt5ClJtTdZpvZcLn8NP0F0w6536CXS1lONuecPyaFhWkHTCpPyJFXKvNr/dxVWcjCx5mH0RF0RD/Z+lM0cGlNRIrKCsX/IYFaq5g8f6yQfS0EDIqmRhqHLKf3bxCz8xrMO3ZX2y4h+ew/rH38K8Dh43W7NCHY4aL98J0xsnGNSVM=
+  file_glob: true
+  file: $TRAVIS_BUILD_DIR/products/*.tar.gz
+  skip_cleanup: true
+  on:
+    repo: invenia/LibPQBuilder
+    tags: true
