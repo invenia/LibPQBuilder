@@ -43,6 +43,8 @@ const URL_HASHES = Dict(
     "https://get.enterprisedb.com/postgresql/postgresql-10.3-1-osx-binaries.zip" => "eba4747e500c25e499a69533eedd0983ab6ae5377096d8689ffffaada8e98dca",
 )
 
+const LIBS = ["libpq", "libssl", "libcrypto"]
+
 function edb_binary_url(platform::String, version::String, build::String, ext::String)
     "https://get.enterprisedb.com/postgresql/postgresql-$version-$build-$platform-binaries$ext"
 end
@@ -105,7 +107,9 @@ end
 extract_zip(filepath::String, dir::String) = run(pipeline(`unzip -d $dir $filepath`, stdout=DevNull))
 
 function find_prefixdir(dir::String, prefixdir::String)
-    glob("*/$prefixdir/*libpq.*", dir)
+    mapreduce(vcat, LIBS) do libname
+        glob("*/$prefixdir/*$libname.*", dir)
+    end
 end
 
 function copy_files(srcdir::String, destdir::String)
