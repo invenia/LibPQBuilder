@@ -4,6 +4,7 @@ using Glob
 using SHA
 
 const DOWNLOADS_DIR = joinpath(get(ENV, "TRAVIS_BUILD_DIR", @__DIR__), "downloads")
+const EXTRACTED_DIR = joinpath(get(ENV, "TRAVIS_BUILD_DIR", @__DIR__), "extracted")
 const PRODUCTS_DIR = joinpath(get(ENV, "TRAVIS_BUILD_DIR", @__DIR__), "products")
 
 const DEFAULT_TAG = "v10.3-1-0"
@@ -74,8 +75,12 @@ function download(url::String, dir::String)
     return filepath
 end
 
-function extract(filepath::String, ext::String)
-    dir = replace(filepath, ext, "")
+function extract(filepath::String, parent_dir::String, ext::String)
+    if !isdir(parent_dir)
+        mkpath(parent_dir)
+    end
+
+    dir = joinpath(parent_dir, basename(replace(filepath, ext, "")))
 
     if contains(ext, "zip")
         extract_zip(filepath, dir)
@@ -141,7 +146,7 @@ function make_tarballs(
         url = edb_binary_url(edb_name, postgresql_version, edb_build, archive_ext)
         downloaded = download(url, download_dir)
         info("Extracting binaries for $platform")
-        extracted = extract(downloaded, archive_ext)
+        extracted = extract(downloaded, EXTRACTED_DIR, archive_ext)
         info("Picking relevant libpq files for $platform")
         copy_files(extracted, product_path)
         info("Archiving libpq files for $platform")
