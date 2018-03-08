@@ -6,9 +6,17 @@ using SHA
 const DOWNLOADS_DIR = joinpath(get(ENV, "TRAVIS_BUILD_DIR", @__DIR__), "downloads")
 const PRODUCTS_DIR = joinpath(get(ENV, "TRAVIS_BUILD_DIR", @__DIR__), "products")
 
-const TAG = get(ENV, "TRAVIS_TAG", "v10.3-1-0")
+const DEFAULT_TAG = "v10.3-1-0"
 const TAG_REGEX = r"v([\d\.]+)-(\d+)-(\d+)"
-const TAG_MATCH = match(TAG_REGEX, TAG)
+const TAG_MATCH = let
+    tag = get(ENV, "TRAVIS_TAG", DEFAULT_TAG)
+    tag_match = match(TAG_REGEX, tag)
+    if tag_match === nothing
+        tag_match = match(TAG_REGEX, DEFAULT_TAG)
+    end
+
+    tag_match
+end
 
 const POSTGRESQL_VERSION = String(TAG_MATCH.captures[1])
 const EDB_BUILD = String(TAG_MATCH.captures[2])
