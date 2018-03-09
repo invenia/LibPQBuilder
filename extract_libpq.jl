@@ -134,6 +134,8 @@ function archive(dir::String)
     output = "$dir.tar.gz"
 
     run(pipeline(`tar -C $dir -czf $output .`, stdout=DevNull))
+
+    return output
 end
 
 function make_tarballs(
@@ -154,7 +156,8 @@ function make_tarballs(
         info("Picking relevant libpq files for $platform")
         copy_files(extracted, product_path)
         info("Archiving libpq files for $platform")
-        archive(product_path)
+        output_file = archive(product_path)
+        info("Hash for $(basename(output_file)) is $(hash_file(output_file))")
         info("Done with $platform")
     end
 end
