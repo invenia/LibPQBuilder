@@ -45,7 +45,7 @@ const URL_HASHES = Dict(
 
 const LIBS = ["libpq",
     "libssl", "libcrypto", # linux/macos
-    "libeay32", "ssleay32", "libintl", "libiconv", # windows
+    "libeay32", "ssleay32", "libintl", "libiconv", "libintl-*", "libiconv-*", # windows
 ]
 
 function edb_binary_url(platform::String, version::String, build::String, ext::String)
