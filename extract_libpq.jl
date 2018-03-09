@@ -43,7 +43,10 @@ const URL_HASHES = Dict(
     "https://get.enterprisedb.com/postgresql/postgresql-10.3-1-osx-binaries.zip" => "eba4747e500c25e499a69533eedd0983ab6ae5377096d8689ffffaada8e98dca",
 )
 
-const LIBS = ["libpq", "libssl", "libcrypto"]
+const LIBS = ["libpq",
+    "libssl", "libcrypto", # linux/macos
+    "libeay32", "ssleay32", "libintl", "libiconv", # windows
+]
 
 function edb_binary_url(platform::String, version::String, build::String, ext::String)
     "https://get.enterprisedb.com/postgresql/postgresql-$version-$build-$platform-binaries$ext"
