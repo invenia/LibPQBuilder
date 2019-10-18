@@ -1,21 +1,30 @@
 language: julia
+os:
+  - linux
 julia:
-- 0.6
+  - 1.0
 notifications:
   email: false
+git:
+  depth: 99999999
 cache:
+  timeout: 1000
   directories:
-    - $TRAVIS_BUILD_DIR/downloads
+    - downloads
+env:
+  global:
+    - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+    - BINARYBUILDER_AUTOMATIC_APPLE=true
+sudo: required
+# Before anything else, get the latest versions of things
 before_script:
-- julia -e 'Pkg.add("Glob"); Pkg.add("SHA")'
-- julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryProvider.jl")'
-- julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryBuilder.jl"); Pkg.build()'
+  - julia -e 'using Pkg; pkg"add BinaryProvider"; pkg"add BinaryBuilder#master"; Pkg.build()'
 script:
-- julia extract_libpq.jl
+  - julia build_tarballs.jl
 deploy:
   provider: releases
   api_key:
-    secure: XqYptfhGBSZp9jgfXUqulZc2tknrziwzFMbwsVtU0Xm7dQFI2qmLL5FBRFE4dYYushfq0X+Qqn/Ep+jy1D0v1BFUcVkR9KxLqkDep01HExgXQ7165oTBwqb6flcZu8T+wjTke/+EqV/uL0FR0cmMtpP01YQbl/mE8HeDx9uEcXbtt1GY3JokkMT3llLMbu+xNraaR2ZAno9Gtfa1gDBBhjBZ2I+vC/LGwtXVucop5QPnTyp8uYqjsOATZ4l7hakwbMzmCWQ5kON9nubLMMHGrgiDWk4UFaK87lsocEGrnOYZsdcK21n35rZT9TcgDqKyDXS/Zdxuu6ZRRN33JVM7yApgoljl1OHG1knL2Z26zvYoGHcQAR0Z+r2GjEu0OtlPaQJ4El/kgbxM7Ayuq3KPG689KKEynYaBlOIzNtwtgMhX08HG8eLke83zs5Dj1OAp04j3EnIG8Z/ZeEFunUdtANYrK3WIqv6MiiCiR0lFV40ohhfgkFdj/xLc52Sbe4aEt5ClJtTdZpvZcLn8NP0F0w6536CXS1lONuecPyaFhWkHTCpPyJFXKvNr/dxVWcjCx5mH0RF0RD/Z+lM0cGlNRIrKCsX/IYFaq5g8f6yQfS0EDIqmRhqHLKf3bxCz8xrMO3ZX2y4h+ew/rH38K8Dh43W7NCHY4aL98J0xsnGNSVM=
+    secure: "rw9Mo9lKDWVHaGg+cnJqp/NWRsEg16nsm0/95P0DFwutzRHxwYiBMXoPThbVAE585ad99JbatiWr9yT+xzTgqNTMlJDQYV5ozlfqkBAhboA4qNlH27tvRNcjjxof3I76+IICTt5boXGZdvKrXwvPdd38C6WB/bgnGMpveFykM7CcQxAYN2fQuVoFnFzeVnJX6YdfHPw1pXG6uRECtlF+gDGCT318XfMatLxuaWQz5j1RdpfPYpCFj07PCKNjLhSZhqGzSVkQyNhCeqfRSGBUKpQhuH1IAVAfq4xGQh781W3bPpo6z9CM2nJ3R4AYz6SqCvsBALbo3TjnQT8MBr42pLYz36xtXHKHYRh9FD/sUGtTaT9tw2NS/ZbcbdLHRdhMix0eQyQOh+Qh4uN8P2yAb2+RiPRPnDONJnrcS6QpoV3Kjrh2+ccG+xEcZCE0sBE9DGAaAm224sTJR8bLQP5XRC9wW+4pX29Z7eDAgFlxWGCFcjfknGpziHXKRsldE7NHmnIW0kgBGBfoKIkJgeaOkl37uA6uykIz2qZWZqK3i8zz5IuKtuJz7WHoHJEYxmMYvQUbAhKVPXlnMp4hC4S5vEGac9UQNLLBvES7It/Dxa3eolSOtfD8OOMrj/kymnO5xPwVTZchxq7rqVlZfL7yIBxQR3phnvRiYCUYefIrHmk="
   file_glob: true
   file: $TRAVIS_BUILD_DIR/products/*.tar.gz
   skip_cleanup: true
