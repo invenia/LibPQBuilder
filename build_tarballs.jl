@@ -10,10 +10,10 @@ sources = [
     "https://ftp.postgresql.org/pub/source/v12.0/postgresql-12.0.tar.gz" =>
     "15c7f267b476d764c79401d7f61f39c76222314951f77e6893a5854db26b6616",
 
-    "https://data.iana.org/time-zones/tzdata-latest.tar.gz" =>
+    "https://data.iana.org/time-zones/releases/tzdata2019c.tar.gz" =>
     "79c7806dab09072308da0e3d22c37d3b245015a591891ea147d3b133b60ffc7c",
 
-    "https://data.iana.org/time-zones/tzcode-latest.tar.gz" =>
+    "https://data.iana.org/time-zones/releases/tzcode2019c.tar.gz" =>
     "f6ebd3668e02d5ed223d3b7b1947561bf2d2da2f4bd1db61efefd9e06c167ed4",
 
 ]
